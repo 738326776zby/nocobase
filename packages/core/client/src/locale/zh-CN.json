@@ -221,7 +221,7 @@
   "General collection": "普通数据表",
   "SQL collection": "SQL数据表",
   "Connect to database view": "连接数据库视图",
-  "Sync from database":"从数据库同步",
+  "Sync from database": "从数据库同步",
   "Source collections": "来源数据表",
   "Field source": "来源字段",
   "Preview": "预览",
@@ -836,5 +836,7 @@
   "Are you sure you want to perform the {{title}} action?": "你确定执行{{title}}操作吗？",
   "Sign in with another account": "登录其他账号",
   "Return to the main application": "返回主应用",
-  "Permission denied": "没有权限"
+  "Permission denied": "没有权限",
+  "Custom title field": "自定义标题字段",
+  "Custom field name": "自定义字段名称"
 }

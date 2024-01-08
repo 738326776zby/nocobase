@@ -95,6 +95,12 @@ const ObjectSelect = (props: Props) => {
 };
 
 const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes((input || '').toLowerCase());
+// 将模版字符串的值解析并返回
+const replacePlaceholders = (inputStr, values) => {
+  return inputStr.replace(/{{(.*?)}}/g, (match, placeholder) => {
+    return values[placeholder] ?? '';
+  });
+};
 
 const InternalSelect = connect(
   (props: Props) => {
@@ -103,6 +109,26 @@ const InternalSelect = connect(
     if (mode && !['multiple', 'tags'].includes(mode)) {
       mode = undefined;
     }
+
+    const _label = others.fieldNames.label;
+    const _options = others?.options?.map((op) => {
+      const valueOject = {};
+      let outputStr = '';
+
+      if (_label.includes('{{')) {
+        const regex = /{{(.*?)}}/g;
+        let match;
+        while ((match = regex.exec(_label))) {
+          valueOject[match[1]] = op[match[1]] || '';
+        }
+        outputStr = replacePlaceholders(_label, valueOject);
+      } else {
+        outputStr = op[_label];
+      }
+      // 在下拉数据中每个对象中拼接一个key=模版字符串（fieldNames.label） value= 解析后的字符串的属性
+      op[_label] = outputStr;
+      return op;
+    });
     if (objectValue) {
       return (
         <ObjectSelect
@@ -155,6 +181,7 @@ const InternalSelect = connect(
         onChange={(changed) => {
           props.onChange?.(changed === undefined ? null : changed);
         }}
+        options={_options}
         mode={mode}
       />
     );

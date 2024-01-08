@@ -169,19 +169,42 @@ const InternalRemoteSelect = connect(
       }
     }, [runDep]);
 
+    const parseTemplates = (input) => {
+      const regex = /{{\s*(\w+)\s*}}/g;
+      const matches = input.match(regex);
+
+      if (matches) {
+        return matches.map((match) => match.replace(/{{|\}}|\s/g, ''));
+      }
+
+      return [];
+    };
+
     const onSearch = async (search) => {
+      const label = fieldNames.label;
+      let searchParams;
+      const isCustomLabel = label.includes('{{');
+
+      if (isCustomLabel) {
+        const labelArr = parseTemplates(label);
+        searchParams = {
+          $or: labelArr.map((labelItem) => ({
+            [labelItem]: {
+              $includes: search,
+            },
+          })),
+        };
+      } else {
+        searchParams = {
+          [fieldNames.label]: {
+            [operator]: search,
+          },
+        };
+      }
       run({
-        filter: mergeFilter([
-          search
-            ? {
-                [fieldNames.label]: {
-                  [operator]: search,
-                },
-              }
-            : {},
-          service?.params?.filter,
-        ]),
+        filter: mergeFilter([searchParams, service?.params?.filter]),
       });
+
       searchData.current = search;
     };
 

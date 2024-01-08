@@ -7,9 +7,10 @@ export interface SelectWithTitleProps {
   options?: any;
   fieldNames?: any;
   onChange?: (...args: any[]) => void;
+  onClick?: (...args: any[]) => void;
 }
 
-export function SelectWithTitle({ title, defaultValue, onChange, options, fieldNames }: SelectWithTitleProps) {
+export function SelectWithTitle({ title, defaultValue, onChange, options, fieldNames, onClick }: SelectWithTitleProps) {
   const [open, setOpen] = useState(false);
   const timerRef = useRef<any>(null);
   return (
@@ -30,6 +31,7 @@ export function SelectWithTitle({ title, defaultValue, onChange, options, fieldN
         open={open}
         popupMatchSelectWidth={false}
         bordered={false}
+        onSelect={onClick}
         defaultValue={defaultValue}
         onChange={onChange}
         fieldNames={fieldNames}
